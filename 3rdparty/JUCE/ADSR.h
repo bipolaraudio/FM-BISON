@@ -9,7 +9,7 @@
 // - No external dependencies
 // - Added various functions as used by SFM::Envelope (synth-envelope.h)
 // - Removed buffer processing function
-// - Curves added by Paul
+// - Curves added by Paul (FIXME: analyze efficiency, though it's probably fine!)
 // 
 // FIXME:
 //   - Uses 'jassert' (which happens to be available since FM. BISON uses it too
@@ -209,7 +209,6 @@ namespace SFM // So that it will not collide with juce::ADSR
 
             // Set state
             state = State::pianosustain;
-
         }
 
         void scaleReleaseRate(float scale) noexcept
