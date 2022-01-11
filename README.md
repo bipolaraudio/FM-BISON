@@ -54,7 +54,7 @@ to the MIT license.
 Please refer to the Github issue list to keep track of our to-do list, to see what we're aware of and working 
 on and the new features or improvements we have in mind.
 
-This code is currently in use/development for our in-development Monk MKI plug-in (a 1980s-inspired virtual keyboard instrument). We'll announce when it's ready to hit the market.
+This code is currently in use/development for our in-house plug-ins.
 
 Any significant contributions to this codebase will of course grant you a free copy!
 
