@@ -78,16 +78,16 @@ namespace SFM
 	// and I've added them to the arsenal; I haven't done any testing but they're probably a bit less
 	// precise than their textbook counterparts above, but perhaps faster
 
-	SFM_INLINE static float Lin2dB(double linear) 
+	SFM_INLINE static float Lin2dB(float linear) 
 	{
-		constexpr double LOG_2_DB = 8.6858896380650365530225783783321;
-		return float(log(linear)*LOG_2_DB);
+		constexpr float LOG_2_DB = 8.6858896380650365530225783783321f;
+		return logf(linear)*LOG_2_DB;
 	}
 	
-	SFM_INLINE static float dB2Lin(double dB) 
+	SFM_INLINE static float dB2Lin(float dB) 
 	{
-		constexpr double DB_2_LOG = 0.11512925464970228420089957273422;
-		return float(exp(dB*DB_2_LOG));
+		constexpr float DB_2_LOG = 0.11512925464970228420089957273422f;
+		return expf(dB*DB_2_LOG);
 	}
 
 	/* ----------------------------------------------------------------------------------------------------
@@ -122,7 +122,7 @@ namespace SFM
 
 	/* ----------------------------------------------------------------------------------------------------
 
-		Checks & assertions.
+		Integrity checks/assertions.
 
 	 ------------------------------------------------------------------------------------------------------ */
 

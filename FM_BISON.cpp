@@ -459,9 +459,8 @@ namespace SFM
 	{
 		float multiplier = 1.f;
 
-		// Factor in velocity
-		const float velPow = velocity*velocity;
-		multiplier = lerpf<float>(multiplier, multiplier*velPow, patchOp.velSens);
+		// Factor in velocity (linear)
+		multiplier = lerpf<float>(multiplier, multiplier*velocity, patchOp.velSens);
 		
 		// Apply L/R breakpoint cut & level scaling (subtractive/additive & linear/exponential, like the DX7)
 		const unsigned breakpoint = patchOp.levelScaleBP;
