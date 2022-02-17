@@ -299,8 +299,6 @@ private:
 			_a2 = g*_a1;
 			_a3 = g*_a2;
 		}
-
-		float _g;
 		
 		float _a1, _a2, _a3;
 		float _m0, _m1, _m2;
