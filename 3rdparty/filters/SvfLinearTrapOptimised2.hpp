@@ -15,6 +15,8 @@
 //
 // - Using cheaper trig. approximation functions may seem like a good idea but we're on thin
 //   ice as it is
+// 
+// - I've refactored this for work (FD), maybe a I can adapt that version at some point!
 //
 // I can't say I'm a big fan of how most DSP code is written but I'll try to keep it as-is.
 //
@@ -153,7 +155,7 @@ public:
 	
 	// Do *not* mix with stereo tick() call without first calling resetState()
 	SFM_INLINE void tickMono(float &sample) {
-		const float filtered = tickImpl(sample, _v1_left,  _v2_left,  _v3_left,  _ic1eq_left,  _ic2eq_left);
+		const float filtered = tickImpl(sample, _v1_left, _v2_left, _v3_left, _ic1eq_left, _ic2eq_left);
 		sample = filtered;
 	}
 
