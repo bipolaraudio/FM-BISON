@@ -219,7 +219,7 @@ private:
 		SFM_INLINE void update(float cutoff, float q = 0.5f, SvfLinearTrapOptimised2::FLT_TYPE type = LOW_PASS_FILTER, unsigned sampleRate = 44100) {
 			if (type != NO_FLT_TYPE)
 			{
-				float g = tan((cutoff / sampleRate) * SFM::kPI);
+				const float g = tan((cutoff/sampleRate) * SFM::kPI);
 				const float k = computeK(q, type == BELL_FILTER /* Use gain for bell (peak) filter only */);
 			
 				switch (type) {
@@ -266,13 +266,13 @@ private:
 						_m2 = 0;
 						break;
 					case LOW_SHELF_FILTER:
-						computeA(g /= _ASqrt, k);
+						computeA(g/_ASqrt, k);
 						_m0 = 1;
 						_m1 = k*(_A-1);
 						_m2 = _A*_A - 1;
 						break;
 					case HIGH_SHELF_FILTER:
-						computeA(g *= _ASqrt, k);
+						computeA(g*_ASqrt, k);
 						_m0 = _A*_A;
 						_m1 = k*(1-_A)*_A;
 						_m2 = 1-_A*_A;
