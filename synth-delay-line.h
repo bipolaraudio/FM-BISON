@@ -30,6 +30,9 @@ namespace SFM
 			Reset();
 		}
 
+		// Non-copyable
+		DelayLine& operator=(const DelayLine&) = delete;
+
 		DelayLine(unsigned sampleRate, float lenghtInSec) :
 			DelayLine(size_t(sampleRate*lenghtInSec)) 
 		{}
