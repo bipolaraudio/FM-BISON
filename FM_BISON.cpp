@@ -538,7 +538,7 @@ namespace SFM
 		return multiplier;
 	}
 
-	// Simply scales [-1..1] to [0.5..0.5]
+	// Simply scales [-1..1] to [0.0..1.0]
 	SFM_INLINE static float CalcPanning(const PatchOperators::Operator &patchOp)
 	{
 		SFM_ASSERT(fabsf(patchOp.panning) <= 1.f);

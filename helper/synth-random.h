@@ -18,7 +18,7 @@ namespace SFM
 		mt_randf()   -- Returns single prec. random value which is always between 0.f and 1.f
 		mt_randu32() -- Unsigned 32-bit
 		mt_rand32()  -- Signed 32-bit
-		mt_randfc()  -- Returns FP random value between -1 and 1
+		mt_randfc()  -- Returns FP random value between -1.f and 1.f
 	*/
 
 	double mt_rand();
