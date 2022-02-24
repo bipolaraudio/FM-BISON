@@ -103,6 +103,13 @@ namespace SFM
 		return value;
 	}
 
+	// Logarithmic 'interpolator'
+	SFM_INLINE static float logstepf(float x)
+	{
+//		SFM_ASSERT_BINORM(x);
+		return 1.f - 1.f/(1.f+x);
+	}
+
 	// Approx. sinf() derived from mr. Bhaskara's theorem
 	SFM_INLINE static float BhaskaraSinf(float x)
 	{
