@@ -12,7 +12,7 @@
 // - Curves added by Paul (FIXME: analyze efficiency, though it's probably fine!)
 // 
 // FIXME:
-//   - Uses 'jassert' (which happens to be available since FM. BISON uses it too
+//   - Uses 'jassert' (which happens to be available since FM. BISON uses it too)
 //
 // ----------------------------------------------------------------------------------------------------
 
