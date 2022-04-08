@@ -1308,11 +1308,11 @@ namespace SFM
 			}
 			else if (true == m_monoVoiceReleaseReq.IsValid())
 			{
-				const auto key  = m_monoVoiceReleaseReq.key;
-				const int index = GetVoice(key);
+//				const auto key  = m_monoVoiceReleaseReq.key;
+//				const int index = GetVoice(key);
 				
 				// We can only ever release the first slot as we merely use the second to steal a voice
-				SFM_ASSERT(0 == index);
+				SFM_ASSERT(0 == GetVoice(m_monoVoiceReleaseReq.key));
 
 				if (false == voice.IsSustained())
 				{
@@ -1877,7 +1877,7 @@ namespace SFM
 			}
 
 #if defined(SFM_DISABLE_VOICE_THREAD)
-			if (true)
+			if (/* DISABLES CODE */ (true))
 #else
 			if (voiceIndices.size() <= kSingleThreadMaxVoices || numSamples < kMultiThreadMinSamples)
 #endif
