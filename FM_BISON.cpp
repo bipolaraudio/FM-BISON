@@ -126,14 +126,14 @@ namespace SFM
 		m_globalLFO->Initialize(freqLFO, m_sampleRate);
 
 		// Reset global interpolated parameters
-		m_curLFOBlend    = { m_patch.LFOBlend, m_sampleRate, kDefParameterLatency };
-		m_curLFOModDepth = { m_patch.LFOModDepth, m_sampleRate, kDefParameterLatency };
-		m_curCutoff      = { SVF_CutoffToHz(m_patch.cutoff, m_Nyquist), m_sampleRate, kDefParameterLatency * 10.f /* Longer */ };
-		m_curQ           = { SVF_ResoToQ(m_patch.resonance), m_sampleRate, kDefParameterLatency };
-		m_curPitchBend   = { 0.f, m_sampleRate, kDefParameterLatency };
-		m_curAmpBend     = { 1.f /* 0dB */, m_sampleRate, kDefParameterLatency };
-		m_curModulation  = { 0.f, m_sampleRate, kDefParameterLatency * 1.5f /* Longer */ };
-		m_curAftertouch  = { 0.f, m_sampleRate, kDefParameterLatency * 3.f  /* Longer */ };
+		m_curLFOBlend    = { m_patch.LFOBlend, m_sampleRate, kDefParameterLatency, 0.f, 1.f };
+		m_curLFOModDepth = { m_patch.LFOModDepth, m_sampleRate, kDefParameterLatency, 0.f, 1.f };
+		m_curCutoff      = { SVF_CutoffToHz(m_patch.cutoff, m_Nyquist), m_sampleRate, kDefParameterLatency * 10.f /* Longer */, kSVFMinFilterCutoffHz, kSVFMaxFilterCutoffHz};
+		m_curQ           = { SVF_ResoToQ(m_patch.resonance), m_sampleRate, kDefParameterLatency, kSVFMinFilterQ, kSVFMaxFilterQ};
+		m_curPitchBend   = { 0.f, m_sampleRate, kDefParameterLatency, -1.f, 1.f };
+		m_curAmpBend     = { 1.f /* 0dB */, m_sampleRate, kDefParameterLatency, 0.f, 1.f };
+		m_curModulation  = { 0.f, m_sampleRate, kDefParameterLatency * 1.5f /* Longer */, 0.f, 1.f };
+		m_curAftertouch  = { 0.f, m_sampleRate, kDefParameterLatency * 3.f  /* Longer */, 0.f, 1.f };
 
 		// Reset operator peaks (visualization)
 		for (float &peak : m_opPeaks)
@@ -664,6 +664,13 @@ namespace SFM
 			: AcousticTrackingCurve(normalizedKey, patchOp.envKeyTrack); // See impl. for details
 	}
 
+	// Calc. voice soft clipping (distortion) amount
+	SFM_INLINE static float CalcSoftClip(float opVelocity, const PatchOperators::Operator &patchOp)
+	{
+		const float softClip = lerpf<float>(patchOp.drive, patchOp.drive*opVelocity, patchOp.velSens);
+		return softClip;
+	}
+
 	// Calc. LFO frequencies
 	SFM_INLINE static void CalcLFOFreq(float &frequency /* Set to base freq. */, float &modFrequency, int speedAdj)
 	{
@@ -813,7 +820,7 @@ namespace SFM
 
 				// Feedback
 				voiceOp.iFeedback   = patchOp.feedback;
-				voiceOp.feedbackAmt = { patchOp.feedbackAmt, m_sampleRate, kDefParameterLatency };
+				voiceOp.feedbackAmt = { patchOp.feedbackAmt, m_sampleRate, kDefParameterLatency, 0.f, 1.f };
 				voiceOp.feedback    = 0.f;
 				
 				// LFO influence
@@ -822,11 +829,10 @@ namespace SFM
 				voiceOp.panMod   = patchOp.panMod;
 
 				// Panning
-				voiceOp.panning = { CalcPanning(patchOp), m_sampleRate, kDefParameterLatency };
+				voiceOp.panning = { CalcPanning(patchOp), m_sampleRate, kDefParameterLatency, 0.f, 1.f };
 
-				// Distortion
-				const float drive = lerpf<float>(patchOp.drive, patchOp.drive*opVelocity, patchOp.velSens);
-				voiceOp.drive = { drive, m_sampleRate, kDefParameterLatency };
+				// Soft clip (distortion)
+				voiceOp.softClip = { CalcSoftClip(opVelocity, patchOp), m_sampleRate, kDefParameterLatency, 0.f, 1.f };
 			}
 		}
 
@@ -987,7 +993,7 @@ namespace SFM
 
 				// Feedback
 				voiceOp.iFeedback   = patchOp.feedback;
-				voiceOp.feedbackAmt = { patchOp.feedbackAmt, m_sampleRate, kDefParameterLatency };
+				voiceOp.feedbackAmt = { patchOp.feedbackAmt, m_sampleRate, kDefParameterLatency, 0.f, 1.f };
 				voiceOp.feedback    = 0.f;
 				
 				// LFO influence
@@ -996,11 +1002,10 @@ namespace SFM
 				voiceOp.panMod   = patchOp.panMod;
 
 				// Panning
-				voiceOp.panning = { CalcPanning(patchOp), m_sampleRate, kDefParameterLatency };
+				voiceOp.panning = { CalcPanning(patchOp), m_sampleRate, kDefParameterLatency, 0.f, 1.f };
 
-				// Distortion
-				const float drive = lerpf<float>(patchOp.drive, patchOp.drive*opVelocity, patchOp.velSens);
-				voiceOp.drive = { drive, m_sampleRate, kDefParameterLatency };
+				// Soft clip (distortion)
+				voiceOp.softClip = { CalcSoftClip(opVelocity, patchOp), m_sampleRate, kDefParameterLatency, 0.f, 1.f };
 			}
 		}
 
@@ -1378,8 +1383,8 @@ namespace SFM
 									voiceOp.index.SetTarget(index);
 
 									// Square(pusher) (or "drive")
-									const float drive = lerpf<float>(patchOp.drive, patchOp.drive*opVelocity, patchOp.velSens);
-									voiceOp.drive.SetTarget(drive);
+									const float softClip = CalcSoftClip(opVelocity, patchOp);
+									voiceOp.softClip.SetTarget(softClip);
 
 									// Feedback amount
 									voiceOp.feedbackAmt.SetTarget(patchOp.feedbackAmt);

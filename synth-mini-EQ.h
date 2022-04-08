@@ -33,9 +33,9 @@ namespace SFM
 ,			m_bassFc(kLoHz/sampleRate)
 ,			m_trebleFc(kHiHz/sampleRate)
 ,			m_midFc(kMidHz/sampleRate)
-,			m_bassdB(0.f, sampleRate, kDefParameterLatency)
-,			m_trebledB(0.f, sampleRate, kDefParameterLatency)
-,			m_middB(0.f, sampleRate, kDefParameterLatency)
+,			m_bassdB(0.f, sampleRate, kDefParameterLatency, 0.f, 1.f)
+,			m_trebledB(0.f, sampleRate, kDefParameterLatency, 0.f, 1.f)
+,			m_middB(0.f, sampleRate, kDefParameterLatency, 0.f, 1.f)
 		{
 			SetBiquads();
 		}

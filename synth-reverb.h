@@ -198,7 +198,7 @@ namespace SFM
 
 		// Interpolated parameters
 		InterpolatedParameter<kLinInterpolate, true> m_curWet;
-		InterpolatedParameter<kLinInterpolate, true, kMinReverbWidth, kMaxReverbWidth> m_curWidth;
+		InterpolatedParameter<kLinInterpolate, true> m_curWidth;
 		InterpolatedParameter<kLinInterpolate, true> m_curRoomSize;
 		InterpolatedParameter<kLinInterpolate, true> m_curDampening;
 		InterpolatedParameter<kLinInterpolate, true> m_curPreDelay;

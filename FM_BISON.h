@@ -375,11 +375,11 @@ namespace SFM
 		// Per-sample interpolated global parameters
 		InterpolatedParameter<kLinInterpolate, true> m_curLFOBlend;
 		InterpolatedParameter<kLinInterpolate, true> m_curLFOModDepth;
-		InterpolatedParameter<kLinInterpolate, true, kSVFMinFilterCutoffHz, kSVFMaxFilterCutoffHz> m_curCutoff; // SVF filter, in Hz
-		InterpolatedParameter<kLinInterpolate, true, kSVFMinFilterQ, kSVFMaxFilterQ> m_curQ;                    // Minimum in this case is kSVFMinFilterQ (asserted)
+		InterpolatedParameter<kLinInterpolate, true> m_curCutoff; // SVF filter, in Hz
+		InterpolatedParameter<kLinInterpolate, true> m_curQ;      // Minimum in this case is kSVFMinFilterQ (asserted)
 
 		// Not in patch but supplied as parameters:
-		InterpolatedParameter<kLinInterpolate, true, -1.f, 1.f> m_curPitchBend; // 'bendWheel' = [-1..1]
+		InterpolatedParameter<kLinInterpolate, true> m_curPitchBend;            // 'bendWheel' = [-1..1]
 		InterpolatedParameter<kLinInterpolate, false> m_curAmpBend;             // Gain
 		InterpolatedParameter<kLinInterpolate, true> m_curModulation;           // [-1..1]
 		InterpolatedParameter<kLinInterpolate, true> m_curAftertouch;           //

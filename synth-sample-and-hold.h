@@ -20,7 +20,7 @@ namespace SFM
 	public:
 		SampleAndHold(unsigned sampleRate) :
 			m_sampleRate(sampleRate)
-,			m_curSignal(0.f, sampleRate, m_slewRate)
+,			m_curSignal(0.f, sampleRate, m_slewRate, 0.f, 1.f)
 		{
 			Reset();
 		}

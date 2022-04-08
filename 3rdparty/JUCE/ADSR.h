@@ -9,7 +9,7 @@
 // - No external dependencies
 // - Added various functions as used by SFM::Envelope (synth-envelope.h)
 // - Removed buffer processing function
-// - Curves added by Paul (FIXME: analyze efficiency, though it's probably fine!)
+// - Curves added by Paul
 // 
 // FIXME:
 //   - Uses 'jassert' (which happens to be available since FM. BISON uses it too)
@@ -72,22 +72,21 @@ namespace SFM // So that it will not collide with juce::ADSR
         {
             Parameters() = default;
 
-            Parameters (float attackTimeSeconds,
-                float attackCurve,
-                float decayTimeSeconds,
-                float decayCurve,
-                float sustainLevel,
-                float releaseTimeSeconds,
-                float releaseCurveY)
-                : attack (attackTimeSeconds),
-                attackCurve (attackCurve),
-                decay (decayTimeSeconds),
-                decayCurve(decayCurve),
-                sustain (sustainLevel),
-                release (releaseTimeSeconds),
-                releaseCurve(releaseCurveY)
-            {
-            }
+            Parameters (
+				float attackTimeSeconds,
+				float attackCurve,
+				float decayTimeSeconds,
+				float decayCurve,
+				float sustainLevel,
+				float releaseTimeSeconds,
+				float releaseCurveY) :
+			attack (attackTimeSeconds)
+,			attackCurve (attackCurve)
+,			decay (decayTimeSeconds)
+,			decayCurve(decayCurve)
+,			sustain (sustainLevel)
+,			release (releaseTimeSeconds)
+,			releaseCurve(releaseCurveY) {}
 
             float attack = 0.1f, attackCurve = 0.5f, decay = 0.1f, decayCurve = 0.5f, sustain = 1.0f, release = 0.1f, releaseCurve = 0.5f;
         };
@@ -205,7 +204,7 @@ namespace SFM // So that it will not collide with juce::ADSR
             // Elongate decay phase
             const float decay = parameters.decay;
             const float invFalloff = 1.f-falloff;
-            pianoSustainRate = getRate(envelopeVal, SFM::kEpsilon + decay + decay*(1.f-falloff), sampleRate);
+            pianoSustainRate = getRate(envelopeVal, SFM::kEpsilon + decay + decay*invFalloff, sampleRate);
 
             // Set state
             state = State::pianosustain;
@@ -275,8 +274,10 @@ namespace SFM // So that it will not collide with juce::ADSR
                     low = start;
             }
 
-            const float controlA = isOut ? high : low;
-            const float controlB = isOut ? low : high;
+			// Let's trust that the compiler figures out this can be collapsed into a single branch, and otherwise
+			// the branch predictor will take care of it (FIXME: check generated assembly)
+			const float controlA = isOut ? high : low;
+			const float controlB = isOut ? low : high;
 
             return getCubicCurve(start, end, controlA, controlB, offset);
         }
@@ -352,9 +353,9 @@ namespace SFM // So that it will not collide with juce::ADSR
                 return timeInSeconds > 0.0f ? (float) (distance / (timeInSeconds * sr)) : -1.0f;
             };
 
-            attackRate  = getRate (1.0f, parameters.attack, sampleRate);
-            decayRate   = getRate (1.0f, parameters.decay, sampleRate);
-            releaseRate = getRate (1.0f, parameters.release, sampleRate);
+			attackRate  = getRate (1.0f, parameters.attack, sampleRate);
+			decayRate   = getRate (1.0f, parameters.decay, sampleRate);
+			releaseRate = getRate (1.0f, parameters.release, sampleRate);
             
             releaseLevel = -1.f;
 

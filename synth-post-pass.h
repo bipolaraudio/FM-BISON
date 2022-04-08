@@ -101,7 +101,7 @@ namespace SFM
 		DelayLine m_delayLineM;
 		DelayLine m_delayLineR;
 		CascadedSinglePoleLPF m_delayFeedbackLPF_L, m_delayFeedbackLPF_R;
-		InterpolatedParameter<kLinInterpolate, true, 0.f, kMainDelayInSec> m_curDelayInSec;
+		InterpolatedParameter<kLinInterpolate, true> m_curDelayInSec;
 		InterpolatedParameter<kLinInterpolate, true> m_curDelayWet;
 		InterpolatedParameter<kLinInterpolate, false> m_curDelayDrive;
 		InterpolatedParameter<kLinInterpolate, true> m_curDelayFeedback;

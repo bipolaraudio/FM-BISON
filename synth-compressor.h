@@ -35,14 +35,14 @@ namespace SFM
 ,			m_RMS(sampleRate, kCompRMSWindowSec)
 ,			m_peak(sampleRate, kMinCompAttack)
 ,			m_gainEnvdB(sampleRate, 0.f /* Unit gain in dB */)
-,			m_curThresholddB(kDefCompThresholddB, sampleRate, kDefParameterLatency)
-,			m_curKneedB(kDefCompKneedB, sampleRate, kDefParameterLatency)
-,			m_curRatio(kDefCompRatio, sampleRate, kDefParameterLatency)
-,			m_curGaindB(kDefCompGaindB, sampleRate, kDefParameterLatency)
-,			m_curAttack(kDefCompAttack, sampleRate, kDefParameterLatency)
-,			m_curRelease(kDefCompRelease, sampleRate, kDefParameterLatency)
-,			m_curLookahead(0.f, sampleRate, kDefParameterLatency)
 ,			m_autoGainCoeff(expf(-1.f / (sampleRate*kCompAutoGainSlewInSec)))
+,			m_curThresholddB(kDefCompThresholddB, sampleRate, kDefParameterLatency, 0.f, 1.f)
+,			m_curKneedB(kDefCompKneedB, sampleRate, kDefParameterLatency, 0.f, 1.f)
+,			m_curRatio(kDefCompRatio, sampleRate, kDefParameterLatency, kMinCompRatio, kMaxCompRatio)
+,			m_curGaindB(kDefCompGaindB, sampleRate, kDefParameterLatency, 0.f, 1.f)
+,			m_curAttack(kDefCompAttack, sampleRate, kDefParameterLatency, kMinCompAttack, kMaxCompAttack)
+,			m_curRelease(kDefCompRelease, sampleRate, kDefParameterLatency, kMinCompRelease, kMaxCompRelease)
+,			m_curLookahead(0.f, sampleRate, kDefParameterLatency, 0.f, 1.f)
 		{
 		}
 
@@ -91,10 +91,10 @@ namespace SFM
 		// Interpolated parameters
 		InterpolatedParameter<kLinInterpolate, false> m_curThresholddB;
 		InterpolatedParameter<kLinInterpolate, false> m_curKneedB;
-		InterpolatedParameter<kLinInterpolate, true, kMinCompRatio, kMaxCompRatio> m_curRatio;
+		InterpolatedParameter<kLinInterpolate, true> m_curRatio;
 		InterpolatedParameter<kLinInterpolate, false> m_curGaindB;
-		InterpolatedParameter<kLinInterpolate, true, kMinCompAttack, kMaxCompAttack> m_curAttack;
-		InterpolatedParameter<kLinInterpolate, true, kMinCompRelease, kMaxCompRelease> m_curRelease;
+		InterpolatedParameter<kLinInterpolate, true> m_curAttack;
+		InterpolatedParameter<kLinInterpolate, true> m_curRelease;
 		InterpolatedParameter<kLinInterpolate, true> m_curLookahead;
 	};
 }

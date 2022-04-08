@@ -42,7 +42,7 @@ namespace SFM
 	constexpr float kTapeDelayHz = kGoldenRatio;
 	constexpr float kTapeDelaySpread = 0.02f;
 
-	// Tube tone LPF Qs
+	// Tube tone LPF Qs (in normalized domain, [0...1])
 	constexpr float kTubeToneFlatQ = 0.f;
 	constexpr float kTubeToneColorQ = kGoldenRatio*0.0628f;
 
@@ -55,12 +55,12 @@ namespace SFM
 ,		m_delayLineL(unsigned(sampleRate*kMainDelayLineSize))
 ,		m_delayLineM(unsigned(sampleRate*kMainDelayLineSize))
 ,		m_delayLineR(unsigned(sampleRate*kMainDelayLineSize))
-,		m_curDelayInSec(0.f, sampleRate, kDefParameterLatency * 4.f /* Longer */)
-,		m_curDelayWet(0.f, sampleRate, kDefParameterLatency)
-,		m_curDelayDrive(1.f /* 0dB */, sampleRate, kDefParameterLatency)
-,		m_curDelayFeedback(0.f, sampleRate, kDefParameterLatency)
-,		m_curDelayFeedbackCutoff(1.f, sampleRate, kDefParameterLatency)
-,		m_curDelayTapeWow(0.f, sampleRate, kDefParameterLatency)
+,		m_curDelayInSec(0.f, sampleRate, kDefParameterLatency * 4.f /* Longer */, 0.f, kMainDelayInSec)
+,		m_curDelayWet(0.f, sampleRate, kDefParameterLatency, 0.f, 1.f)
+,		m_curDelayDrive(1.f /* 0dB */, sampleRate, kDefParameterLatency, 0.f, 1.f)
+,		m_curDelayFeedback(0.f, sampleRate, kDefParameterLatency, 0.f, 1.f)
+,		m_curDelayFeedbackCutoff(1.f, sampleRate, kDefParameterLatency, 0.f, 1.f)
+,		m_curDelayTapeWow(0.f, sampleRate, kDefParameterLatency, 0.f, 1.f)
 		
 		// Chorus/Phaser
 ,		m_chorusDL(sampleRate/10  /* 100MS max. chorus delay */)
@@ -74,16 +74,16 @@ namespace SFM
 
 		// Post filter
 ,		m_postFilter(m_sampleRate4X)
-,		m_curPostCutoff(0.f, m_sampleRate4X, kDefParameterLatency * 2.f /* Longer */)
-,		m_curPostReso(0.f, m_sampleRate4X, kDefParameterLatency)
-,		m_curPostDrive(0.f, m_sampleRate4X, kDefParameterLatency)
-,		m_curPostWet(0.f, m_sampleRate4X, kDefParameterLatency)
+,		m_curPostCutoff(0.f, m_sampleRate4X, kDefParameterLatency * 2.f /* Longer */, 0.f, 1.f)
+,		m_curPostReso(0.f, m_sampleRate4X, kDefParameterLatency, 0.f, 1.f)
+,		m_curPostDrive(0.f, m_sampleRate4X, kDefParameterLatency, 0.f, 1.f)
+,		m_curPostWet(0.f, m_sampleRate4X, kDefParameterLatency, 0.f, 1.f)
 		
 		// Tube distort
-,		m_curTubeDist(0.f, m_sampleRate4X, kDefParameterLatency)
-,		m_curTubeDrive(kDefTubeDrive, m_sampleRate4X, kDefParameterLatency)
-,		m_curTubeOffset(0.f, m_sampleRate4X, kDefParameterLatency)
-,		m_curTubeTone(kDefTubeTone, m_sampleRate4X, kDefParameterLatency)
+,		m_curTubeDist(0.f, m_sampleRate4X, kDefParameterLatency, 0.f, 1.f)
+,		m_curTubeDrive(kDefTubeDrive, m_sampleRate4X, kDefParameterLatency, 0.f, 1.f)
+,		m_curTubeOffset(0.f, m_sampleRate4X, kDefParameterLatency, 0.f, 1.f)
+,		m_curTubeTone(kDefTubeTone, m_sampleRate4X, kDefParameterLatency, 0.f, 1.f)
 
 		// Post (EQ)
 ,		m_postEQ(sampleRate, true)
@@ -95,9 +95,9 @@ namespace SFM
 ,		m_compressorBiteLPF(kCompressorBiteCutHz/sampleRate)
 		
 		// Misc.
-,		m_curChorusWet(0.f, sampleRate, kDefParameterLatency)
-,		m_curPhaserWet(0.f, sampleRate, kDefParameterLatency)
-,		m_curMasterVol(1.f, sampleRate, kDefParameterLatency)
+,		m_curChorusWet(0.f, sampleRate, kDefParameterLatency, 0.f, 1.f)
+,		m_curPhaserWet(0.f, sampleRate, kDefParameterLatency, 0.f, 1.f)
+,		m_curMasterVol(1.f, sampleRate, kDefParameterLatency, 0.f, 1.f)
 	{
 		// Allocate intermediate buffers
 		m_pBufL  = reinterpret_cast<float *>(mallocAligned(maxSamplesPerBlock*sizeof(float), 16));
@@ -343,12 +343,14 @@ namespace SFM
 			" Choose between FIR or IIR filtering depending on your needs in term of latency and phase 
 			  distortion. With FIR filters, the phase is linear but the latency is maximised. With IIR 
 			  filtering, the phase is compromised around the Nyquist frequency but the latency is minimised. "
-
-			I've tried to skip oversampling entirely but this resulted in clicking artifacts, so tough luck :)
-			FIXME: research why!
+		 
+		 	Currently using FIR (ergo low phase distortion over latency).
+		 
+		 	Not oversampling degrades the quality of the effects; the distortion is much more prone to coarse
+		 	transients and aliasing and the stability of the 24dB filter kernel is less.
 
 		 ------------------------------------------------------------------------------------------------------ */
-
+                        
 		// Set post filter parameters
 		m_curPostCutoff.SetTarget(postCutoff);
 		m_curPostReso.SetTarget(postReso);

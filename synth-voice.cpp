@@ -17,7 +17,7 @@ namespace SFM
 		enabled = false;
 
 		// Near-zero frequency
-		curFreq = { kEpsilon, sampleRate, kDefParameterLatency };
+		curFreq = { kEpsilon, sampleRate, kDefParameterLatency, 0.f, 1.f };
 
 		// No detune jitter
 		detuneOffs = 0.f;
@@ -26,8 +26,8 @@ namespace SFM
 		keyTracking = 0.f;
 
 		// Silent
-		amplitude = { 0.f, sampleRate, kDefParameterLatency };
-		index     = { 0.f, sampleRate, kDefParameterLatency };
+		amplitude = { 0.f, sampleRate, kDefParameterLatency, 0.f, 1.f };
+		index     = { 0.f, sampleRate, kDefParameterLatency, 0.f, 1.f };
 
 		// Void oscillator
 		oscillator = Oscillator(sampleRate);
@@ -45,7 +45,7 @@ namespace SFM
 		iFeedback = -1;
 
 		// No feedback
-		feedbackAmt = { 0.f, sampleRate, kDefParameterLatency };
+		feedbackAmt = { 0.f, sampleRate, kDefParameterLatency, 0.f, 1.f };
 		feedback = 0.f;
 
 		// No modulation
@@ -53,11 +53,11 @@ namespace SFM
 		pitchMod = 0.f;
 		panMod   = 0.f;
 
-		// No soft distortion
-		drive = { 0.f, sampleRate, kDefParameterLatency };
+		// No soft clipping (distortion)
+		softClip = { 0.f, sampleRate, kDefParameterLatency, 0.f, 1.f };
 
 		// No (manual) panning
-		panning = { 0.f, sampleRate, kDefParameterLatency };
+		panning = { 0.f, sampleRate, kDefParameterLatency, 0.f, 1.f };
 
 		// Not a carrier
 		isCarrier = false;
@@ -76,8 +76,8 @@ namespace SFM
 		envGain.SetRelease(240.f); //
 
 		// Default supersaw settings
-		supersawDetune = { kDefSupersawDetune, sampleRate, kDefParameterLatency };
-		supersawMix    = { kDefSupersawMix,    sampleRate, kDefParameterLatency };
+		supersawDetune = { kDefSupersawDetune, sampleRate, kDefParameterLatency , 0.f, 1.f};
+		supersawMix    = { kDefSupersawMix,    sampleRate, kDefParameterLatency , 0.f, 1.f};
 
 	}
 
@@ -281,7 +281,7 @@ namespace SFM
 				const float curAmplitude = voiceOp.amplitude.Sample();
 				const float curIndex = voiceOp.index.Sample();
 				const float curEG = voiceOp.envelope.Sample();
-				const float curSquarepusher = voiceOp.drive.Sample();
+				const float curSquarepusher = voiceOp.softClip.Sample();
 				const float curFeedbackAmt = voiceOp.feedbackAmt.Sample() * kFeedbackScale;
 				const float curPanning = voiceOp.panning.Sample();
 				
