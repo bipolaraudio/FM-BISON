@@ -21,9 +21,9 @@
 // - processMono() returns filtered sample instead of writing to ref.
 // - Certain filters are relatively expensive to 'set', see setBiquad() impl.
 //
-// - Useful (graphical) design tool @ https://www.earlevel.com/main/2013/10/13/biquad-calculator-v2/
+// - Useful (graphical) design tool @ https://www.earlevel.com/main/2013/10/13/biquad-calculator-v3/
 // - Like above, but to "design" coefficients @ https://www.earlevel.com/main/2013/10/28/pole-zero-placement-v2/
-// - As for Q, 0.707 is a nice default value, and [0.01..10.0] a decent range (just don't feed it zero!)
+// - As for Q, 0.707 is a nice default value, and [0.01..20.0] a decent range (just don't feed it zero!)
 //
 // I can't say I'm a big fan of how most DSP code is written but I'll try to keep it as-is.
 //
@@ -135,8 +135,9 @@ SFM_INLINE void Biquad::setBiquad(int type, float Fc, float Q, float peakGaindB)
 	if (bq_type_none == type)
 		return;
 
-	z1l = z2l = 0.f; // Stereo (L)
-	z1r = z2r = 0.f; // (R)
+	// This worked for sh*t @ Fall Damage, does it here?
+	// z1l = z2l = 0.f; // Stereo (L)
+	// z1r = z2r = 0.f; // (R)
 
 	m_Q = Q;
 	m_Fc = Fc;
