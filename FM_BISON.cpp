@@ -583,7 +583,7 @@ namespace SFM
 		const unsigned Nyquist = sampleRate/2;
 
 //		filter.resetState();    //
-//		filter.reset();         // <- Shouldn't be necessary, as we always initialize it or set it to 'bq_type_none'
+		filter.reset();         // <- This *is* necesasry after 20/05/2022 (see impl.)
 		modFilter.resetState(); //
 		
 		const float normQ = patchOp.resonance;
@@ -603,7 +603,7 @@ namespace SFM
 		}
 		
 		float cutoffNorm = -1.f; // Causes assertion if not set for kLowpassFilter/kHighpassFilter
-		const float biQ = 0.01f + 19.99f**normQ; // See Biquad.h
+		const float biQ = 0.01f + 19.99f*normQ; // See Biquad.h
 		switch (patchOp.filterType)
 		{
 		default:
