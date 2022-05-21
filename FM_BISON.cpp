@@ -603,7 +603,7 @@ namespace SFM
 		}
 		
 		float cutoffNorm = -1.f; // Causes assertion if not set for kLowpassFilter/kHighpassFilter
-		const float biQ = 0.01f + 9.99f*normQ; // See Biquad.h
+		const float biQ = 0.01f + 19.99f**normQ; // See Biquad.h
 		switch (patchOp.filterType)
 		{
 		default:
