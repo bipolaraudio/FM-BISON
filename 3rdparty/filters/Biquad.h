@@ -83,8 +83,8 @@ public:
 	void reset();
 	SFM_INLINE void setBiquad(int type, float Fc, float Q, float peakGaindB);
 
-	SFM_INLINE void  process(float &sampleL, float &sampleR); 
-	SFM_INLINE float processMono(float sample);
+	SFM_INLINE void process(float &sampleL, float &sampleR);
+	SFM_INLINE void processMono(float &sample);
 
 	SFM_INLINE int getType() const
 	{
@@ -117,7 +117,7 @@ SFM_INLINE void Biquad::process(float &sampleL, float &sampleR) {
 	sampleR = outR;
 }
 
-SFM_INLINE float Biquad::processMono(float sample) {
+SFM_INLINE void Biquad::processMono(float &sample) {
 
 	SFM_ASSERT(m_type != bq_type_none);
 
@@ -125,7 +125,7 @@ SFM_INLINE float Biquad::processMono(float sample) {
 	z1l = sample * a1 + z2l - b1 * out;  //
 	z2l = sample * a2 - b2 * out;        //
 
-	return out;
+	sample = out;
 }
 
 SFM_INLINE void Biquad::setBiquad(int type, float Fc, float Q, float peakGaindB)

@@ -366,7 +366,7 @@ namespace SFM
 
 				default:
 					// I'm assuming the filter is set up properly
-					sample = voiceOp.filter.processMono(sample);
+					voiceOp.filter.processMono(sample);
 				}
 
 #else

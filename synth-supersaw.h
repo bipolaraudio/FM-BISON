@@ -116,15 +116,17 @@ namespace SFM
 		SFM_INLINE float Sample()
 		{
 			// Centre oscillator
-			const float main = Oscillate(0);
+			const float main = Oscillate(0, true);
 
 			// Side oscillators
 			float sides = 0.f;
 			for (unsigned iOsc = 1; iOsc < kNumSupersawOscillators; ++iOsc)
-				sides += Oscillate(iOsc);
+				sides += Oscillate(iOsc, (iOsc < kNumSupersawOscillators-1) ? true : false);
 
-			float signal = m_HPF.processMono(main*m_mainMix + sides*m_sideMix); // As far as I remember (FIXME: check paper) this filter is to remove (possible aliasing related) rumble below the centre freq.
-			signal = m_blocker.Apply(signal); // Why exactly do I think I should do something about a DC offset in this situation?
+            float signal = main*m_mainMix + sides*m_sideMix;
+
+            // m_HPF.processMono(signal);
+            // signal = m_blocker.Apply(signal);
 
 			return signal;
 		}
@@ -183,9 +185,13 @@ namespace SFM
 			return oscPhase;
 		}
 
-		SFM_INLINE float Oscillate(unsigned iOsc)
+		SFM_INLINE float Oscillate(unsigned iOsc, bool subtractPureSine)
 		{
-			return oscPolySaw(Tick(iOsc), m_pitch[iOsc]);
+            const float phase = Tick(iOsc);
+			float polySaw = oscPolySaw(phase, m_pitch[iOsc]);
+            if (subtractPureSine)
+                polySaw -= oscSine(phase);
+            return polySaw;
 		}
 
 		SFM_INLINE void OnFrequencyChange(float frequency)
@@ -201,8 +207,8 @@ namespace SFM
 			}
 
 			// Cut lower end
-			constexpr float Q = kNormalGainAtCutoff*kPI*0.5f; // Totally arbitrary.. (FIXME?)
-			m_HPF.setBiquad(bq_type_highpass, frequency/m_sampleRate, Q, 0.f);
+			// constexpr float Q = kNormalGainAtCutoff*kPI*0.5f; // Totally arbitrary.. (FIXME?)
+			// m_HPF.setBiquad(bq_type_highpass, frequency/m_sampleRate, Q, 0.f);
 		}
 		
 		// Key parameters (detune & mix)

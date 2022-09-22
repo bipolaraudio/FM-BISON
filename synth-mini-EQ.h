@@ -70,13 +70,13 @@ namespace SFM
 			SetBiquads();
 
 			if (true == m_withMid)
-				sample = m_midPeak.processMono(sample);
+				m_midPeak.processMono(sample);
 
 			float LO = sample;
-			LO = m_bassShelf.processMono(LO);
+			m_bassShelf.processMono(LO);
 
 			float HI = sample;
-			HI = m_trebleShelf.processMono(HI);
+			m_trebleShelf.processMono(HI);
 
 			return (LO+HI)*kNormalGainAtCutoff;
 		}
