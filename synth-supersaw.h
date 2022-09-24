@@ -85,9 +85,9 @@ namespace SFM
 		Supersaw() : 
 			m_sampleRate(1) 
 		{
-			// Initialize phases with random values between [0..1] and let's hope that at least a few of them are irrational
+			// Initialize phases with values between [0..1] and let's hope that at least a few of them are irrational
 			for (auto &phase : m_phase)
-				phase = mt_randf();
+                phase = oscSine(0.11f + 0.1f*mt_randf()); // Should be irrational
 		}
 
 		void Initialize(float frequency, unsigned sampleRate, float detune, float mix);
@@ -116,7 +116,7 @@ namespace SFM
 		SFM_INLINE float Sample()
 		{
 			// Centre oscillator
-			const float main = Oscillate(0, true);
+			const float main = Oscillate(0, false);
 
 			// Side oscillators
 			float sides = 0.f;
@@ -188,7 +188,7 @@ namespace SFM
 		SFM_INLINE float Oscillate(unsigned iOsc, bool subtractPureSine)
 		{
             const float phase = Tick(iOsc);
-			float polySaw = oscPolySaw(phase, m_pitch[iOsc]);
+            float polySaw = oscPolySaw(phase, m_pitch[iOsc]);
             if (subtractPureSine)
                 polySaw -= oscSine(phase);
             return polySaw;
