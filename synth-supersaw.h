@@ -9,10 +9,7 @@
 	
 	FIXME:
 		- Not in [-1..1] - is this a problem?
-		- Minimize beating (especially at lower frequencies)
-		- Review filter
-		- SSE implementation
-		- Too much implementation lives in this header file
+		- Too much implementation lives in this header file?
 
 	For now I'm picking the single precision version since I can't hear the f*cking difference ;)
 */
