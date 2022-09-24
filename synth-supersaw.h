@@ -120,10 +120,10 @@ namespace SFM
 			for (unsigned iOsc = 1; iOsc < kNumSupersawOscillators; ++iOsc)
 				sides += Oscillate(iOsc, (iOsc < kNumSupersawOscillators-1) ? true : false);
 
-            float signal = main*m_mainMix + sides*m_sideMix;
+			float signal = main*m_mainMix + sides*m_sideMix;
 
-            // m_HPF.processMono(signal);
-            // signal = m_blocker.Apply(signal);
+			// m_HPF.processMono(signal);
+			// signal = m_blocker.Apply(signal);
 
 			return signal;
 		}
@@ -184,11 +184,13 @@ namespace SFM
 
 		SFM_INLINE float Oscillate(unsigned iOsc, bool subtractPureSine)
 		{
-                const float phase = Tick(iOsc);
-                float polySaw = oscPolySaw(phase, m_pitch[iOsc]);
-                if (subtractPureSine)
-                    polySaw -= oscSine(phase);
-                return polySaw;
+			const float phase = Tick(iOsc);
+			
+			float polySaw = oscPolySaw(phase, m_pitch[iOsc]);
+			if (subtractPureSine)
+				polySaw -= oscSine(phase);
+			
+			return polySaw;
 		}
 
 		SFM_INLINE void OnFrequencyChange(float frequency)
