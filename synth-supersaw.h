@@ -84,7 +84,7 @@ namespace SFM
 		{
 			// Initialize phases with values between [0..1] and let's hope that at least a few of them are irrational
 			for (auto &phase : m_phase)
-                phase = oscSine(0.11f + 0.1f*mt_randf()); // Should be irrational
+				phase = oscSine(0.11f + 0.1f*mt_randf()); // Should be irrational
 		}
 
 		void Initialize(float frequency, unsigned sampleRate, float detune, float mix);
