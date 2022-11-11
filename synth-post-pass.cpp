@@ -401,8 +401,11 @@ namespace SFM
 			m_tubeDCBlocker.Apply(distortedL, distortedR);
 
 			// Add to signal
-			float postDistortedL = sampleL + distortedL*amount; // lerpf<float>(sampleL, distortedL, smoothstepped);
-			float postDistortedR = sampleR + distortedR*amount; // lerpf<float>(sampleR, distortedR, smoothstepped);
+//			float postDistortedL = sampleL + distortedL*amount; // lerpf<float>(sampleL, distortedL, smoothstepped);
+//			float postDistortedR = sampleR + distortedR*amount; // lerpf<float>(sampleR, distortedR, smoothstepped);
+			const float smoothstepped = smoothstepf(amount);
+			float postDistortedL = lerpf<float>(sampleL, distortedL, smoothstepped);
+			float postDistortedR = lerpf<float>(sampleR, distortedR, smoothstepped);
 
 			// Apply 24dB post filter
 			const float curPostCutoff = m_curPostCutoff.Sample();
