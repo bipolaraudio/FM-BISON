@@ -18,7 +18,7 @@
 namespace SFM
 {
 	// Use the peak filter to tweak Q to a sort of satisfactory shape: https://www.earlevel.com/main/2013/10/13/biquad-calculator-v2/
-	constexpr float kMidQ = kNormalGainAtCutoff; // kPI*2.f;
+	constexpr float kMidQ = kNormalGainAtCutoff; // Higher is steeper!
 
 	// Centre frequencies (I hope, also, looked at https://blog.landr.com/eq-basics-everything-musicians-need-know-eq/ for ref.)
 	constexpr float kLoHz  = 80.f;
@@ -33,9 +33,9 @@ namespace SFM
 ,			m_bassFc(kLoHz/sampleRate)
 ,			m_trebleFc(kHiHz/sampleRate)
 ,			m_midFc(kMidHz/sampleRate)
-,			m_bassdB(0.f, sampleRate, kDefParameterLatency)
-,			m_trebledB(0.f, sampleRate, kDefParameterLatency)
-,			m_middB(0.f, sampleRate, kDefParameterLatency)
+,			m_bassdB(0.f, sampleRate, kDefParameterLatency, 0.f, 1.f)
+,			m_trebledB(0.f, sampleRate, kDefParameterLatency, 0.f, 1.f)
+,			m_middB(0.f, sampleRate, kDefParameterLatency, 0.f, 1.f)
 		{
 			SetBiquads();
 		}
@@ -70,13 +70,13 @@ namespace SFM
 			SetBiquads();
 
 			if (true == m_withMid)
-				sample = m_midPeak.processMono(sample);
+				m_midPeak.processMono(sample);
 
 			float LO = sample;
-			LO = m_bassShelf.processMono(LO);
+			m_bassShelf.processMono(LO);
 
 			float HI = sample;
-			HI = m_trebleShelf.processMono(HI);
+			m_trebleShelf.processMono(HI);
 
 			return (LO+HI)*kNormalGainAtCutoff;
 		}

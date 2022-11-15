@@ -8,8 +8,8 @@
 #pragma once
 
 // To modify floating point behaviour (SSE)
-#include <xmmintrin.h>
-#include <pmmintrin.h>
+// #include <xmmintrin.h>
+// #include <pmmintrin.h>
 
 #include <cmath>
 #include <limits>
@@ -27,18 +27,18 @@ namespace SFM
 	public:
 		DisableDenormals()
 		{
-			m_mxcsrRestore = _mm_getcsr();
+//			m_mxcsrRestore = _mm_getcsr();
 
 			// Set SSE FTZ and DAZ flags (https://www.cita.utoronto.ca/~merz/intel_c10b/main_cls/mergedProjects/fpops_cls/common/fpops_set_ftz_daz.htm)
 			// Basically we're treating all DEN as zero
-			_MM_SET_FLUSH_ZERO_MODE(_MM_FLUSH_ZERO_ON);
-			_MM_SET_DENORMALS_ZERO_MODE(_MM_DENORMALS_ZERO_ON);
+//			_MM_SET_FLUSH_ZERO_MODE(_MM_FLUSH_ZERO_ON);
+//			_MM_SET_DENORMALS_ZERO_MODE(_MM_DENORMALS_ZERO_ON);
 		}
 
 		~DisableDenormals()
 		{
 			// Restore SSE flags
-			_mm_setcsr(m_mxcsrRestore);
+//			_mm_setcsr(m_mxcsrRestore);
 		}
 
 	private:

@@ -37,13 +37,19 @@ namespace SFM
 ,			m_gainEnvdB(sampleRate, kInfdB) // In this particular situation starting from (near) silence seems correct
 ,			m_voxSandH(sampleRate)
 ,			m_voxGhostEnv(sampleRate, 0.f)
-,			m_curResonance(0.f, sampleRate, kDefParameterLatency)
-,			m_curAttack(kDefWahAttack, sampleRate, kDefParameterLatency)
-,			m_curHold(kDefWahHold, sampleRate, kDefParameterLatency)
-,			m_curRate(kDefWahRate, sampleRate, kDefParameterLatency)
-,			m_curSpeak(0.f, sampleRate, kDefParameterLatency)
-,			m_curCut(0.f, sampleRate, kDefParameterLatency)
-,			m_curWet(0.f, sampleRate, kDefParameterLatency)
+,			m_curResonance(0.f, sampleRate, kDefParameterLatency, 0.f, 1.f)
+,			m_curAttack(kDefWahAttack, sampleRate, kDefParameterLatency, kMinWahAttack, kMaxWahAttack)
+,			m_curHold(kDefWahHold, sampleRate, kDefParameterLatency, kMinWahHold, kMaxWahHold)
+,			m_curRate(kDefWahRate, sampleRate, kDefParameterLatency, 0.f, 1.f)
+,			m_curDrivedB(0.f, sampleRate, kDefParameterLatency, 0.f, 1.f)
+,			m_curSpeak(0.f, sampleRate, kDefParameterLatency, 0.f, 1.f)
+,			m_curSpeakVowel(0.f, sampleRate, kDefParameterLatency, 0.f, kMaxWahSpeakVowel)
+,			m_curSpeakVowelMod(0.f, sampleRate, kDefParameterLatency, 0.f, 1.f)
+,			m_curSpeakGhost(0.f, sampleRate, kDefParameterLatency, 0.f, 1.f)
+,			m_curSpeakCut(0.f, sampleRate, kDefParameterLatency, 0.f, 1.f)
+,			m_curSpeakReso(0.f, sampleRate, kDefParameterLatency, 0.f, 1.f)
+,			m_curCut(0.f, sampleRate, kDefParameterLatency, 0.f, 1.f)
+,			m_curWet(0.f, sampleRate, kDefParameterLatency, 0.f, 1.f)
 		{
 			m_voxOscPhase.Initialize(kDefWahRate, sampleRate);
 			m_voxSandH.SetSlewRate(kWahVoxSandHSlewRate);
@@ -108,13 +114,13 @@ namespace SFM
 
 		// Interpolated parameters
 		InterpolatedParameter<kLinInterpolate, true> m_curResonance;
-		InterpolatedParameter<kLinInterpolate, true, kMinWahAttack, kMaxWahAttack> m_curAttack;
-		InterpolatedParameter<kLinInterpolate, true, kMinWahHold, kMaxWahHold> m_curHold;
+		InterpolatedParameter<kLinInterpolate, true> m_curAttack;
+		InterpolatedParameter<kLinInterpolate, true> m_curHold;
 		InterpolatedParameter<kLinInterpolate, false> m_curRate;
 		InterpolatedParameter<kLinInterpolate, false> m_curDrivedB;
 		InterpolatedParameter<kLinInterpolate, true> m_curSpeak;
-		InterpolatedParameter<kLinInterpolate, true, 0.f, kMaxWahSpeakVowel> m_curSpeakVowel;
-		InterpolatedParameter<kLinInterpolate, true > m_curSpeakVowelMod;
+		InterpolatedParameter<kLinInterpolate, true> m_curSpeakVowel;
+		InterpolatedParameter<kLinInterpolate, true> m_curSpeakVowelMod;
 		InterpolatedParameter<kLinInterpolate, true> m_curSpeakGhost;
 		InterpolatedParameter<kLinInterpolate, true> m_curSpeakCut;
 		InterpolatedParameter<kLinInterpolate, true> m_curSpeakReso;

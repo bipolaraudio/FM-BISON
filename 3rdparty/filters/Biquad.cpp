@@ -26,7 +26,7 @@
 
 void Biquad::reset()
 {
-	m_type = bq_type_lowpass;
+//	m_type = bq_type_lowpass;
 	a0 = 1.f;
 	a1 = a2 = b1 = b2 = 0.f;
 	m_Fc = 0.5f;
@@ -37,6 +37,8 @@ void Biquad::reset()
 	
 	z1l = z2l = 0.f; // Stereo (L)
 	z1r = z2r = 0.f; // (R)
+    
+    m_type = bq_type_none;
 }
  
 void Biquad::calcBiquad(void) {

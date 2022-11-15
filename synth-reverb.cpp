@@ -59,13 +59,13 @@ namespace SFM
 ,		m_width(kDefaultWidth)
 ,		m_roomSize(kDefaultRoomSize)
 ,		m_preDelay(0.f)
-,		m_curWet(0.f, sampleRate, kDefParameterLatency)
-,		m_curWidth(kMinReverbWidth, sampleRate, kDefParameterLatency)
-,		m_curRoomSize(0.f, sampleRate, kDefParameterLatency)
-,		m_curDampening(0.f, sampleRate, kDefParameterLatency)
-,		m_curPreDelay(0.f, sampleRate, kDefParameterLatency * 4.f /* Longer */)
-,		m_curBassdB(0.f, sampleRate, kDefParameterLatency)
-,		m_curTrebledB(0.f, sampleRate, kDefParameterLatency)
+,		m_curWet(0.f, sampleRate, kDefParameterLatency, 0.f, 1.f)
+,		m_curWidth(kMinReverbWidth, sampleRate, kDefParameterLatency, kMinReverbWidth, kMaxReverbWidth)
+,		m_curRoomSize(0.f, sampleRate, kDefParameterLatency, 0.f, 1.f)
+,		m_curDampening(0.f, sampleRate, kDefParameterLatency, 0.f, 1.f)
+,		m_curPreDelay(0.f, sampleRate, kDefParameterLatency * 4.f /* Longer */, 0.f, 1.f)
+,		m_curBassdB(0.f, sampleRate, kDefParameterLatency, 0.f, 1.f)
+,		m_curTrebledB(0.f, sampleRate, kDefParameterLatency, 0.f, 1.f)
 	{
 		// Semi-fixed
 		static_assert(8 == kReverbNumCombs);

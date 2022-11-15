@@ -91,8 +91,8 @@ namespace SFM
 			float pitchMod;
 			float panMod;
 
-			// Drive (square) distortion (R)
-			InterpolatedParameter<kLinInterpolate, false> drive;
+			// *Very* basic distortion (R)
+			InterpolatedParameter<kLinInterpolate, false> softClip;
 
 			// Panning ([0..1], 0.5 is center) (R)
 			InterpolatedParameter<kLinInterpolate, true> panning;
