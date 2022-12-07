@@ -389,13 +389,17 @@ namespace SFM
 			const float tone   = m_curTubeTone.Sample();
 
 			// Apply (soft) clipping
-			const float driveAdj = drive/kMaxTubeDrive; // Normalized
-			float distortedL = Squarepusher(offset+sampleL, driveAdj);
-			float distortedR = Squarepusher(offset+sampleR, driveAdj);
+			float inDistSampleL = sampleL, inDistSampleR = sampleR;
 
 			// Apply tone filter (resonant LPF)
 			m_tubeToneFilter.updateLowpassCoeff(SVF_CutoffToHz(tone, m_Nyquist), toneQ, m_sampleRate4X);
-			m_tubeToneFilter.tick(distortedL, distortedR);
+			m_tubeToneFilter.tick(inDistSampleL, inDistSampleR);
+
+//			const float driveAdj = drive/kMaxTubeDrive; // Normalized
+//			float distortedL = Squarepusher(offset+sampleL, driveAdj);
+//			float distortedR = Squarepusher(offset+sampleR, driveAdj);
+			float distortedL = ZoelzerClip((offset+inDistSampleL)*drive); // CubicClip(offset+sampleL, drive);
+			float distortedR = ZoelzerClip((offset+inDistSampleR)*drive); // CubicClip(offset+sampleR, drive);
 
 			// Remove possible DC offset
 			m_tubeDCBlocker.Apply(distortedL, distortedR);
@@ -403,9 +407,9 @@ namespace SFM
 			// Add to signal
 //			float postDistortedL = sampleL + distortedL*amount; // lerpf<float>(sampleL, distortedL, smoothstepped);
 //			float postDistortedR = sampleR + distortedR*amount; // lerpf<float>(sampleR, distortedR, smoothstepped);
-			const float smoothstepped = smoothstepf(amount);
-			float postDistortedL = lerpf<float>(sampleL, distortedL, smoothstepped);
-			float postDistortedR = lerpf<float>(sampleR, distortedR, smoothstepped);
+//			const float smoothstepped = smoothstepf(amount);
+			float postDistortedL = lerpf<float>(sampleL, distortedL, amount);
+			float postDistortedR = lerpf<float>(sampleR, distortedR, amount);
 
 			// Apply 24dB post filter
 			const float curPostCutoff = m_curPostCutoff.Sample();

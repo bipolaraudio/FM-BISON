@@ -122,8 +122,8 @@ namespace SFM
 
 			float signal = main*m_mainMix + sides*m_sideMix;
 
-			// m_HPF.processMono(signal);
-			// signal = m_blocker.Apply(signal);
+			m_HPF.processMono(signal);
+			signal = m_blocker.Apply(signal);
 
 			return signal;
 		}
