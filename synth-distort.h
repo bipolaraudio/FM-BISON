@@ -22,6 +22,11 @@ namespace SFM
 		return 1.5f*sample - 0.5f*sample*sample*sample;
 	}
 
+	SFM_INLINE float HyperbolicClip(float sample, float drive) // Drive interpreted as linear gain
+	{
+		return ultra_tanhf(sample*drive); // Little imprecise around 0, but that's perfectly OK
+	}
+
 	// Suggested by Thorsten Ørts
 	SFM_INLINE float ThorstenClip(float sample)
 	{
